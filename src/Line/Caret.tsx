@@ -9,9 +9,8 @@ const Element = styled.span`
   color: white;
   font-size: 18px;
 
-  margin: 0 -5px;
+  margin: -5px -5px 0 -5px;
   padding: 0;
-  margin-top: -5px;
 `;
 
 export const Caret = forwardRef(
