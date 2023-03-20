@@ -1,13 +1,13 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { Playground } from "../interfaces/Playground";
 
-import * as IdeSim from "ide-sim-component";
+import * as IdeSim from "../";
 
 interface Props {
   Playground: Playground;
 }
 
-export function IdeSimExample({ Playground }: Props) {
+export function Example({ Playground }: Props) {
   const [{ width, height }, setSize] = useState({ width: 0, height: 0 });
   const [editable, setEditable] = useState(false);
   const theme = useState(IdeSim.themes.PYYNE);

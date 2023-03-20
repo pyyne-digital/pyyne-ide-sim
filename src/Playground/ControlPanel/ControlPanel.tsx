@@ -1,8 +1,8 @@
 import { Dispatch, ReactNode, SetStateAction } from "react";
 import * as Colour from "./Colours";
 
-import { themes } from "ide-sim-component";
-import { Theme } from "ide-sim-component/themes/type";
+import { themes } from "../..";
+import { Theme } from "../../themes/type";
 
 interface Props {
   width: number;

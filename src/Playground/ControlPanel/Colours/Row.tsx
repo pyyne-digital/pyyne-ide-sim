@@ -1,5 +1,5 @@
 import { pointer } from "helpers";
-import { Theme } from "ide-sim-component/themes/type";
+import { Theme } from "../../../themes/type";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components";
 
