@@ -29,4 +29,6 @@ export const FilePath = styled.div`
 
 export const EditorStats = styled.div`
   color: ${({ theme }) => theme.status.text.weak};
+  display: flex;
+  justify-content: space-evenly;
 `;

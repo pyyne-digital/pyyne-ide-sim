@@ -17,10 +17,10 @@ export function StatusBar({
       <FilePath />
 
       <EditorStats>
-        <p>{zoom}%</p>
         <p>
-          {position.y}/{lines.length} ln : col {position.x}
+          {position.y}:{position.x}
         </p>
+        <p>{zoom}%</p>
       </EditorStats>
     </Container>
   );

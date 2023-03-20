@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Playground } from "../interfaces/Playground";
 
 import * as IdeSim from "../";
@@ -7,20 +7,23 @@ interface Props {
   Playground: Playground;
 }
 
+const test = `
+const stripe = require('stripe')('sk_test');
+
+await stripe.paymentIntents.create({
+  amount: 2000, 
+  currency: 'usd'
+});
+`;
+
 export function Example({ Playground }: Props) {
   const [{ width, height }, setSize] = useState({ width: 0, height: 0 });
   const [editable, setEditable] = useState(false);
   const [showColourControls, setShowColourControls] = useState(false);
   const theme = useState(IdeSim.themes.PYYNE);
 
-  const [code, setCode] = useState(`
-  const stripe = require('stripe')('sk_test');
-
-  await stripe.paymentIntents.create({
-    amount: 2000, 
-    currency: 'usd'
-  });
-  `);
+  const [i, si] = useState(0);
+  const [code, setCode] = useState(test);
 
   const [terminalText, setTerminalText] = useState(`
   $ node server.is && stripe listen

@@ -10,7 +10,7 @@ export const Container = styled.div<{
 
   padding: 20px;
 
-  overflow: scroll;
+  overflow: auto;
 
   transition: all 0.3s ease-in-out;
 
