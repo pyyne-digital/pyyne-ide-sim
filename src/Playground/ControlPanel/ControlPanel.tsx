@@ -7,7 +7,10 @@ import { Theme } from "../../themes/type";
 interface Props {
   width: number;
   height: number;
+
   editableState: [boolean, Dispatch<SetStateAction<boolean>>];
+  colourControlsState: [boolean, Dispatch<SetStateAction<boolean>>];
+
   codeState: [string, Dispatch<SetStateAction<string>>];
   terminalTextState: [string, Dispatch<SetStateAction<string>>];
 
@@ -19,11 +22,14 @@ export function ControlPanel({
 
   width,
   height,
+
   editableState: [editable, setEditable],
+  colourControlsState: [colours, showColours],
+
   codeState: [code, setCode],
   terminalTextState: [terminalText, setTerminalText],
 }: Props) {
-  const buildColourControls =
+  const renderColourControls =
     (name = "", i = 0, _path = "") =>
     (object: any): ReactNode => {
       const path = _path ? `${_path}.${name}` : name;
@@ -31,11 +37,12 @@ export function ControlPanel({
       return (
         <Colour.Group indent={i}>
           {name && <h3>{path}</h3>}
+
           {Object.entries(object).map(([k, v]) =>
             typeof v === "string" ? (
               <Colour.Row name={k} initialValue={v} path={path} theme={theme} />
             ) : (
-              buildColourControls(k, i + 1, path)(v)
+              renderColourControls(k, i + 1, path)(v)
             )
           )}
         </Colour.Group>
@@ -45,7 +52,7 @@ export function ControlPanel({
   return (
     <>
       <p>
-        Size: {width}x{height}
+        Size: {Math.floor(width)}x{Math.floor(height)}
       </p>
 
       <span>
@@ -82,8 +89,16 @@ export function ControlPanel({
       />
 
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <h3>Colours</h3>
-        {buildColourControls()(themes.PYYNE)}
+        <h3>
+          <input
+            type="checkbox"
+            checked={colours}
+            onChange={(e) => showColours(e.target.checked)}
+          />
+          Colours
+        </h3>
+
+        {colours && renderColourControls()(themes.PYYNE)}
       </div>
     </>
   );

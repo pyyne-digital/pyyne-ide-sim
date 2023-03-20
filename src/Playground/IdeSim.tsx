@@ -10,6 +10,7 @@ interface Props {
 export function Example({ Playground }: Props) {
   const [{ width, height }, setSize] = useState({ width: 0, height: 0 });
   const [editable, setEditable] = useState(false);
+  const [showColourControls, setShowColourControls] = useState(false);
   const theme = useState(IdeSim.themes.PYYNE);
 
   const [code, setCode] = useState(`
@@ -53,6 +54,7 @@ export function Example({ Playground }: Props) {
           height={height}
           editableState={[editable, setEditable]}
           codeState={[code, setCode]}
+          colourControlsState={[showColourControls, setShowColourControls]}
           terminalTextState={[terminalText, setTerminalText]}
         />
       </Playground.ControlPanel>
