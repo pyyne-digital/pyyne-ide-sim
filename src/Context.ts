@@ -1,5 +1,6 @@
 import { createContext, Dispatch, SetStateAction } from "react";
 import { Theme } from "./themes/type";
+import { TerminalLine } from "./Previews/Terminal/props";
 
 export const defaultContext: {
   theme: [Theme, Dispatch<SetStateAction<Theme>>];
@@ -11,7 +12,7 @@ export const defaultContext: {
 
   preview?: Partial<{
     terminal: {
-      content: string;
+      content: TerminalLine[];
     };
   }>;
 } = {
@@ -24,7 +25,7 @@ export const defaultContext: {
 
   preview: {
     terminal: {
-      content: "",
+      content: [],
     },
   },
 };

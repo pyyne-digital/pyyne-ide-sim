@@ -3,6 +3,7 @@ import * as Colour from "./Colours";
 
 import { themes } from "../..";
 import { Theme } from "../../themes/type";
+import { TerminalLine } from "../../Previews/Terminal/props";
 
 interface Props {
   width: number;
@@ -12,7 +13,7 @@ interface Props {
   colourControlsState: [boolean, Dispatch<SetStateAction<boolean>>];
 
   codeState: [string, Dispatch<SetStateAction<string>>];
-  terminalTextState: [string, Dispatch<SetStateAction<string>>];
+  terminalTextState: [TerminalLine[], Dispatch<SetStateAction<TerminalLine[]>>];
 
   theme: [Theme, Dispatch<SetStateAction<Theme>>];
 }
@@ -75,7 +76,7 @@ export function ControlPanel({
           whiteSpace: "pre",
         }}
       />
-
+      {/* 
       <p>Terminal content:</p>
       <textarea
         value={terminalText}
@@ -86,7 +87,7 @@ export function ControlPanel({
           minHeight: 150,
           whiteSpace: "pre",
         }}
-      />
+      /> */}
 
       <div style={{ display: "flex", flexDirection: "column" }}>
         <h3>

@@ -56,7 +56,7 @@ export function SelfTypingIdeSimulator({
   useEffect(() => {
     setTimeout(() => {
       setContent((previous) => code.substring(0, previous.length + 1));
-    }, Math.random() * 100);
+    }, Math.random() * (code[content.length + 1] === " " ? 10 : 100));
   }, [code, content]);
 
   return (

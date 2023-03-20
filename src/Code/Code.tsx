@@ -19,7 +19,7 @@ export function Code({ colours, lines, position }: Props) {
 
   useEffect(() => {
     ref.current?.scroll({
-      top: ref.current?.offsetHeight,
+      top: 2147483647,
     });
   }, [lines]);
 

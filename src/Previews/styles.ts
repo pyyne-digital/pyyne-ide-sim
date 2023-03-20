@@ -9,7 +9,7 @@ export const PreviewContainer = styled.div`
 
   padding: 10px;
 
-  overflow: scroll hidden;
+  overflow: auto;
 
   background: ${({ theme }) => theme.preview.background};
   color: ${({ theme }) => theme.code.text.default};
@@ -18,4 +18,6 @@ export const PreviewContainer = styled.div`
 export const ContentContainer = styled.div`
   width: 100%;
   height: 100%;
+
+  overflow: auto;
 `;
