@@ -19,24 +19,17 @@ export function Example({ Playground }: Props) {
   const [code, setCode] = useState(data.code);
 
   const [terminalText, setTerminalText] = useState<TerminalLine[]>(
-    `$ node server.is && stripe listen
-  > Ready! Waiting for requests...
-  2023-03-01 14:45:22 [200] payment_intent.created
-  2023-03-01 14:45:22 [200] charge.succeeded
-  2023-03-01 14:45:22 [200] payment_intent.succeeded
-  `
-      .split("\n")
-      .map((text, i) => {
-        const type = !i ? "input" : "output";
-        return {
-          content: text,
-          type,
-          animation: {
-            delay: i === 1 ? 0 : Math.random() * 2000,
-            interval: 100,
-          },
-        } as TerminalLine;
-      })
+    data.terminalOutput.split("\n").map((text, i) => {
+      const type = !i ? "input" : "output";
+      return {
+        content: text,
+        type,
+        animation: {
+          delay: i === 1 ? 0 : Math.random() * 2000,
+          interval: 100,
+        },
+      } as TerminalLine;
+    })
   );
 
   return (

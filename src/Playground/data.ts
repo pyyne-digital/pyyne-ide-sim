@@ -89,3 +89,9 @@ export default new (class ProjectService extends Pyyne.Service {
   }
 })();
 `;
+
+export const terminalOutput = `$ node server.is && stripe listen
+> Ready! Waiting for requests...
+2023-03-01 14:45:22 [200] payment_intent.created
+2023-03-01 14:45:22 [200] charge.succeeded
+2023-03-01 14:45:22 [200] payment_intent.succeeded`;
