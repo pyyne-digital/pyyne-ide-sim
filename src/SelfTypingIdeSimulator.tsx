@@ -50,7 +50,10 @@ export function SelfTypingIdeSimulator({
   `;
 
   const codeLines = useMemo(codeProcessor(content, language), [content]);
-  const x = useMemo(() => codeLines.at(-1)?.length || 0, [codeLines]);
+  const x = useMemo(
+    () => content.split("\n").at(-1)?.trim().length || 0,
+    [codeLines]
+  );
   const y = useMemo(() => codeLines.length, [codeLines]);
 
   useEffect(() => {

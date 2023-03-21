@@ -8,74 +8,96 @@ interface Props {
   Playground: Playground;
 }
 
-const test = `
-import { useEffect, useState } from "react";
-import { Playground } from "../interfaces/Playground";
+const test = `import * as Pyyne from 'interfaces/PYYNE';
+import { Correlated } from 'interfaces/Correlation';
 
-import * as IdeSim from "../";
+const { projects } = Pyyne.Types;
 
-interface Props {
-  Playground: Playground;
-}
+export default new (class ProjectService extends Pyyne.Service {
+  public async GetProjects(params?: GetProjectsParams): Promise<Project[]> {
+    const result = await Pyyne.Service.get<PYYNE.Project[]>('/projects', {
+      params: getProjects.params.out(params),
+    });
 
-const test = \`
-const stripe = require("stripe")("sk_test");
+    return result.data.map(projects.in);
+  }
 
-await stripe.paymentIntents.create({
-  amount: 2000,
-  currency: "usd",
-});
-\`;
+  public async GetProject(id: Id, params?: GetProjectParams): Promise<Project> {
+    const result = await Pyyne.Service.get<PYYNE.Project>(\`/project/\${id}\`, {
+      params: getProjects.params.out(params),
+    });
 
-export function Example({ Playground }: Props) {
-  const [{ width, height }, setSize] = useState({ width: 0, height: 0 });
-  const [editable, setEditable] = useState(false);
-  const [showColourControls, setShowColourControls] = useState(false);
-  const theme = useState(IdeSim.themes.PYYNE);
+    return projects.in(result.data);
+  }
 
-  const [i, si] = useState(0);
-  const [code, setCode] = useState(test);
+  public async GetPaginatedProjects(
+    params: PaginationParams & GetProjectsParams,
+  ): Promise<Paginated<Project[]>> {
+    const result = await Pyyne.Service.get<PYYNE.Paginated<PYYNE.Project[]>>(
+      \`/projects/page/\${params.pageIndex}\`,
+      {
+        params: getProjects.params.out(params),
+      },
+    );
 
-  const [terminalText, setTerminalText] = useState(\`
-  $ node server.is && stripe listen
-  > Ready! Waiting for requests...
-  2023-03-01 14:45:22 [200] payment_intent.created
-  2023-03-01 14:45:22 [200] charge.succeeded
-  2023-03-01 14:45:22 [200] payment_intent.succeeded
-  \`);
+    return result.paginated(projects.in);
+  }
 
-  return (
-    <Playground.Container>
-      <Playground.Showcase onSizeChange={setSize}>
-        <IdeSim.SelfTypingIdeSimulator
-          theme="PYYNE"
-          language="javascript"
-          context={{
-            theme,
-            code: { editable, colours: {}, content: code },
-            preview: { terminal: { content: terminalText } },
-          }}
-        >
-          {code}
-          <IdeSim.Previews.Terminal>{[]}</IdeSim.Previews.Terminal>
-        </IdeSim.SelfTypingIdeSimulator>
-      </Playground.Showcase>
+  public async GetProjectsByConsultants(
+    params: GetProjectsParams & ConsultantRelationQuery,
+  ): Promise<Correlated<Project[]>> {
+    const result = await Pyyne.Service.get<PYYNE.Paginated<PYYNE.Project[]>>(
+      \`/projects\`,
+      {
+        params: getProjects.params.out(params),
+      },
+    );
 
-      <Playground.ControlPanel>
-        <IdeSim.Playground.ControlPanel
-          theme={theme}
-          width={width}
-          height={height}
-          editableState={[editable, setEditable]}
-          codeState={[code, setCode]}
-          colourControlsState={[showColourControls, setShowColourControls]}
-          terminalTextState={[terminalText, setTerminalText]}
-        />
-      </Playground.ControlPanel>
-    </Playground.Container>
-  );
-}
+    return result.correlated(projects.in);
+  }
 
+  public async GetPaginatedProjectsByConsultants(
+    params: GetProjectsParams & ConsultantRelationQuery & PaginationParams,
+  ): Promise<Correlated<Project[]> & Paginated<Project[]>> {
+    const result = await Pyyne.Service.get<
+      PYYNE.Paginated<PYYNE.Project[]> & PYYNE.Correlated<PYYNE.Project[]>
+    >(\`/projects\`, {
+      params: getProjects.params.out(params),
+    });
+
+    return {
+      ...result.correlated(projects.in),
+      ...result.paginated(projects.in),
+    };
+  }
+
+  public async CreateProject(form: CreateProjectForm): Promise<Project> {
+    const { data } = await Pyyne.Service.post<
+      PYYNE.Project,
+      PYYNE.Requests.PostProject.Body
+    >('/projects', createProject.body.out(form));
+
+    return projects.in(data);
+  }
+
+  public async EditProject(
+    id: number,
+    form: EditProjectForm,
+  ): Promise<Project> {
+    const { data } = await Pyyne.Service.patch<
+      PYYNE.Project,
+      PYYNE.Requests.PatchProject.Body
+    >(\`/projects/\${id}\`, editProject.body.out(form));
+
+    return projects.in(data);
+  }
+
+  public async DeleteProject(id: number): Promise<boolean> {
+    const { status } = await Pyyne.Service.delete(\`/projects/\${id}\`);
+
+    return status === 204;
+  }
+})();
 `;
 
 export function Example({ Playground }: Props) {
@@ -112,7 +134,7 @@ export function Example({ Playground }: Props) {
       <Playground.Showcase onSizeChange={setSize}>
         <IdeSim.SelfTypingIdeSimulator
           theme="PYYNE"
-          language="tsx"
+          language="typescript"
           context={{
             theme,
             code: { editable, colours: {}, content: code },

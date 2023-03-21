@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import { Position } from "../../interfaces/Position";
 import { Container, EditorStats, FilePath } from "./styles";
 
@@ -6,6 +7,14 @@ interface Props {
   position: Position;
   lines: Array<string>;
 }
+
+const Spaced = styled.div`
+  width: 100px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 
 export function StatusBar({
   zoom = 100,
@@ -17,9 +26,14 @@ export function StatusBar({
       <FilePath />
 
       <EditorStats>
-        <p>
-          {position.y}:{position.x}
-        </p>
+        <Spaced>
+          <p>ln</p>
+          <p>
+            {position.y}:{position.x}
+          </p>
+          <p>col</p>
+        </Spaced>
+
         <p>{zoom}%</p>
       </EditorStats>
     </Container>
