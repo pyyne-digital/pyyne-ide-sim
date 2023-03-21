@@ -42,6 +42,14 @@ export function Example({ Playground }: Props) {
             theme,
             code: { editable, colours: {}, content: code },
             preview: { terminal: { content: terminalText } },
+            animation: {
+              interval: 30,
+              behaviour: {
+                speed: 1,
+                timidness: 1,
+                confidence: 1,
+              },
+            },
           }}
         >
           {code}

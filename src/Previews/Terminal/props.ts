@@ -1,12 +1,22 @@
-export type TerminalLine = {
-  content: string;
-  type: "input" | "output";
+export type TerminalLine =
+  | {
+      type: "input";
+      content: string;
+      prompt?: string;
 
-  animation?: {
-    delay?: number;
-    interval?: number;
-  };
-};
+      animation?: Partial<{
+        time: number;
+        delay: number;
+      }>;
+    }
+  | {
+      type: "output";
+      content: string;
+
+      animation?: Partial<{
+        delay: number;
+      }>;
+    };
 
 export type Props = {
   lines: TerminalLine[];

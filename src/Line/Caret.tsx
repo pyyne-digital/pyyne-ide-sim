@@ -19,6 +19,10 @@ export const Caret = forwardRef(
     const [, setContent] = useState(content);
 
     useEffect(() => {
+      setBlink(true);
+    }, [content]);
+
+    useEffect(() => {
       const interval = setInterval(() => {
         setContent((currentContent) => {
           if (content === currentContent) setBlink((b) => !b);
