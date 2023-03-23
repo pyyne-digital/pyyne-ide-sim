@@ -4,9 +4,10 @@ import { ColourTypes } from "./coloursType";
 
 export const Container = styled.div<{
   colours: ColourTypes;
+  full?: boolean;
 }>`
   width: 100%;
-  height: calc(50% - ${styleBarHeight});
+  height: ${({ full }) => (full ? "100%" : `calc(50% - ${styleBarHeight})`)};
 
   padding: 20px;
 

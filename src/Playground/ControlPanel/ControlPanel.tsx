@@ -28,7 +28,7 @@ export function ControlPanel({
   colourControlsState: [colours, showColours],
 
   codeState: [code, setCode],
-  terminalTextState: [terminalText, setTerminalText],
+  terminalTextState,
 }: Props) {
   const renderColourControls =
     (name = "", i = 0, _path = "") =>

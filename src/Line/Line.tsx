@@ -32,7 +32,9 @@ export const Line = forwardRef(
     }: Props,
     fref: Ref<HTMLParagraphElement>
   ) => {
-    const { code } = useContext(IdeSimContext);
+    const {
+      code: [code],
+    } = useContext(IdeSimContext);
     const _indentation = indentation || children.match(/ +/g)?.[0].length || 0;
 
     const [content, setContent] = useState(``);
