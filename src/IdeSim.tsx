@@ -50,7 +50,7 @@ export function IdeSim({
       ? children
       : null;
 
-  const _halt = useState(animation?.halt?.[0] ?? true);
+  const _halt = useState(animation?.halt?.[0] ?? false);
   const interval = useState(50);
   const [code, _setCode] = useState<CodeState[0]>({
     content: animation ? `` : codeContent,
@@ -70,12 +70,6 @@ export function IdeSim({
   const theme = useState(typeof _theme === "string" ? themes[_theme] : _theme);
 
   const halt = animation?.halt ?? _halt;
-
-  useEffect(() => {
-    setTimeout(() => {
-      halt[1](false);
-    }, 1000);
-  }, []);
 
   return (
     <Animation id={id} halt={halt} interval={interval}>

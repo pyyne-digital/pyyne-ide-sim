@@ -1,6 +1,15 @@
 import { TerminalLine } from "../Previews/Terminal/props";
 
-export const code = `import * as Pyyne from 'interfaces/PYYNE';
+export const code = `
+const stripe = require('stripe')('sk_test');
+
+await stripe.paymentIntents.create({
+  amount: 2000,
+  currency: 'usd'
+});
+`;
+
+export const longCode = `import * as Pyyne from 'interfaces/PYYNE';
 import { Correlated } from 'interfaces/Correlation';
 
 const { projects } = Pyyne.Types;
@@ -97,11 +106,12 @@ export const terminalOutput: TerminalLine[] = [
     type: "input",
     pre: "$ ",
     pos: "",
-    delay: 0,
+    delay: 150,
     content: "node server && stripe listen",
   },
   {
     type: "output",
+    delay: 50,
     content: "> Ready! Waiting for requests...",
   },
   {

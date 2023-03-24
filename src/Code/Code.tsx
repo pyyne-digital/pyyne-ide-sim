@@ -42,7 +42,6 @@ export function Code({
   const [userScrolling, setUserScrolling] = useState(false);
 
   const lines = useMemo(codeProcessor(code.content, language), [code.content]);
-  // const { speed = 50, timidness = 0, confidence = 1 } = typing || {};
 
   useEffect(() => {
     if (!typing) return setCode("content", children);
@@ -67,8 +66,13 @@ export function Code({
 
   useEffect(() => {
     setCode("cursorPosition", {
-      x: code.content.split("\n").at(-1)?.trim().length || 0,
       y: lines.length,
+      x:
+        code.content
+          .split("\n")
+          .filter((x) => x)
+          .at(-1)
+          ?.trim().length || 0,
     });
   }, [code.content, lines]);
 
@@ -107,6 +111,7 @@ export function Code({
             number={i + 1}
             last={i === lines.length - 1}
             caretRef={caretRef}
+            thinCaret
           >
             {piece}
           </Line>

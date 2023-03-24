@@ -6,6 +6,11 @@ import { Container } from "./styles";
 
 const Content = styled.p<{ indentation: number }>`
   margin-left: ${({ indentation }) => (indentation || 0) * 10}px;
+
+  &,
+  * {
+    white-space: pre !important;
+  }
 `;
 
 interface Props {
@@ -14,6 +19,7 @@ interface Props {
   children: string;
   typingInterval?: number;
 
+  thinCaret?: boolean;
   caretRef?: Ref<HTMLSpanElement>;
   lastLineRef?: Ref<HTMLParagraphElement>;
 
@@ -29,6 +35,7 @@ export const Line = forwardRef(
       caretRef,
       indentation = 0,
       typingInterval,
+      thinCaret = true,
     }: Props,
     fref: Ref<HTMLParagraphElement>
   ) => {
@@ -58,7 +65,9 @@ export const Line = forwardRef(
             __html: content || children,
           }}
         />
-        {last && !code.editable && <Caret ref={caretRef} content={children} />}
+        {last && !code.editable && (
+          <Caret ref={caretRef} content={children} thin={thinCaret} />
+        )}
       </Container>
     );
   }

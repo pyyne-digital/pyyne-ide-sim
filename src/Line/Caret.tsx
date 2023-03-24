@@ -2,19 +2,19 @@ import { ForwardedRef, forwardRef, useEffect, useState } from "react";
 import styled from "styled-components";
 
 interface Props {
+  thin?: boolean;
   content: string;
 }
 
-const Element = styled.span`
-  color: white;
-  font-size: 18px;
-
-  margin: -5px -5px 0 -5px;
+const Element = styled.span<{ thin?: boolean }>`
+  background-color: white;
+  width: ${({ thin }) => `${thin ? 3 : 9}px`};
+  height: 18px;
   padding: 0;
 `;
 
 export const Caret = forwardRef(
-  ({ content }: Props, fref: ForwardedRef<HTMLSpanElement>) => {
+  ({ content, thin }: Props, fref: ForwardedRef<HTMLSpanElement>) => {
     const [blink, setBlink] = useState(true);
     const [, setContent] = useState(content);
 
@@ -35,6 +35,6 @@ export const Caret = forwardRef(
       };
     }, [content]);
 
-    return blink ? <Element ref={fref}>|</Element> : null;
+    return blink ? <Element ref={fref} thin={thin} /> : null;
   }
 );
