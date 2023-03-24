@@ -1,5 +1,5 @@
 import { codeProcessor } from "helpers";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { IdeSimContext } from "../Context";
 import { Line } from "../Line/Line";
 import { AnimationEngineContext } from "../PYYNE/animation/engine";
@@ -15,11 +15,9 @@ export function Terminal({ children }: Props) {
 
   const { insert, remove } = useContext(AnimationEngineContext);
   const {
-    halt: [halt, setHalt],
     preview: [preview, setPreview],
   } = useContext(IdeSimContext);
 
-  // const [lines, setLines] = useState<TerminalLine[]>([]);
   const lines = useMemo(codeProcessor(preview.terminal!.content), [
     preview.terminal!.content,
   ]);
@@ -65,22 +63,6 @@ export function Terminal({ children }: Props) {
         if (line.pos) output(line.pos, index + dt, delay);
       } else output(line.content, index, delay);
 
-      // insert("terminal", ({ clock }) =>
-      //    {
-      //         id: `terminal-content-${index}`,
-      //         triggers: line.type === "input"
-      //         ? {
-      //           time: clock + index,
-      //         } : {},
-      //         function: () => {
-      //           setPreview("terminal", ({ content } = { content: "" }) => ({
-      //             content: content + character,
-      //           }));
-      //         },
-      //       }
-
-      // );
-
       return index + dt + 1;
     }, 0);
 
@@ -88,56 +70,6 @@ export function Terminal({ children }: Props) {
       remove("terminal");
     };
   }, [children]);
-  // console.log(children);
-
-  // const { interval = 50 } = animation || {};
-  // let timeout = 0;
-
-  // useEffect(() => {
-  //   if (animation)
-  //     setAnimationEvents(
-  //       children.map((line) => ({
-  //         time: Math.floor(animation.clock + (line.animation?.delay || 0)),
-  //         event: () => setLines((current) => [...current, line]),
-  //       }))
-  //     );
-  // }, [children]);
-
-  // useEffect(() => {
-  //   if (animation) {
-  //     setLines([]);
-
-  //     setAnimationEvents((events) => {
-  //       const gone = events.filter((event) => event.time <= animation?.clock);
-  //       gone.forEach(({ event }) => event());
-
-  //       return events.filter(({ time }) => time > animation?.clock);
-  //     });
-  //   } else setLines(children);
-  // }, [children]);
-
-  // useEffect(() => {
-  //   children.forEach((line, index) => {
-  //     const previous = index ? children[index - 1] : null;
-  //     const { delay = 1000, interval = 100 } = line.animation || {};
-
-  //     setTimeout(() => {
-  //       setLines((current) => [...current, line]);
-  //     }, timeout);
-
-  //     timeout +=
-  //       delay +
-  //       (previous?.type === "input"
-  //         ? previous.content.length * (previous.animation?.interval || interval)
-  //         : delay);
-  //   });
-  // }, [children]);
-
-  // useEffect(() => {
-  //   ref.current?.scroll({
-  //     top: 2147483647,
-  //   });
-  // }, [lines]);
 
   return (
     <ContentContainer ref={ref}>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Playground } from "../interfaces/Playground";
 
 import * as IdeSim from "../";
-// import { TerminalLine } from "../Previews/Terminal/props";
 
 import * as data from "./data";
 
