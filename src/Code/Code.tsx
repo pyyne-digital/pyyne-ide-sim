@@ -41,14 +41,6 @@ export function Code({
   const lines = useMemo(codeProcessor(code.content, language), [code.content]);
   // const { speed = 50, timidness = 0, confidence = 1 } = typing || {};
 
-  // const { x, y } = useMemo(
-  //   () => ({
-  //     x: children.split("\n").at(-1)?.trim().length || 0,
-  //     y: lines.length,
-  //   }),
-  //   [lines]
-  // );
-
   useEffect(() => {
     if (!typing) return setCode("content", children);
 
@@ -68,6 +60,13 @@ export function Code({
       remove("code");
     };
   }, [children]);
+
+  useEffect(() => {
+    setCode("cursorPosition", {
+      x: code.content.split("\n").at(-1)?.trim().length || 0,
+      y: lines.length,
+    });
+  }, [code.content, lines]);
 
   return (
     <Container ref={ref!} colours={colours} full={full}>

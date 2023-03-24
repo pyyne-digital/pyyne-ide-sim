@@ -17,6 +17,7 @@ export function Example({ Playground }: Props) {
   const theme = useState(IdeSim.themes.PYYNE);
 
   const [code, setCode] = useState(data.code);
+  const [terminalText, setTerminalText] = useState(data.terminalOutput);
 
   return (
     <Playground.Container>

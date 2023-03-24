@@ -6,7 +6,7 @@ import { TerminalLine } from "./Terminal/props";
 // import { AnimationEvent } from "../types";
 
 interface Props {
-  children: TerminalLine[];
+  children: string;
 }
 
 export function Terminal({ children }: Props) {
@@ -58,11 +58,11 @@ export function Terminal({ children }: Props) {
   //   });
   // }, [children]);
 
-  useEffect(() => {
-    ref.current?.scroll({
-      top: 2147483647,
-    });
-  }, [lines]);
+  // useEffect(() => {
+  //   ref.current?.scroll({
+  //     top: 2147483647,
+  //   });
+  // }, [lines]);
 
   return (
     <ContentContainer ref={ref}>

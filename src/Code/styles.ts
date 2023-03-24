@@ -2,12 +2,18 @@ import styled from "styled-components";
 import { height as styleBarHeight } from "../Previews/StatusBar/styles";
 import { ColourTypes } from "./coloursType";
 
+export const padding = "20px";
+
 export const Container = styled.div<{
   colours: ColourTypes;
   full?: boolean;
+  secondaryComponentHeight?: number;
 }>`
-  width: 100%;
-  height: ${({ full }) => (full ? "100%" : `calc(50% - ${styleBarHeight})`)};
+  width: calc(100% - ${padding});
+  height: ${({ full, secondaryComponentHeight = "0px" }) =>
+    `calc(${
+      full ? 100 : 50
+    }% - ((2 * ${padding}) + ${styleBarHeight} + ${secondaryComponentHeight}))`};
 
   padding: 20px;
 

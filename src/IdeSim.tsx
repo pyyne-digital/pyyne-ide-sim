@@ -9,6 +9,7 @@ import { Code } from "./Code/Code";
 
 import { createSetter, TypingBehaviour } from "./types";
 import { Animation } from "./PYYNE/animation/engine";
+import { StatusBar } from "./Previews/StatusBar/StatusBar";
 
 interface Props {
   id?: string;
@@ -41,6 +42,13 @@ export function IdeSim({
       ? children
       : "";
 
+  const secondaryComponent =
+    children instanceof Array
+      ? children.filter((child) => typeof child !== "string")
+      : typeof children !== "string"
+      ? children
+      : null;
+
   const _halt = useState(animation?.halt?.[0] ?? false);
   const interval = useState(50);
   const [code, _setCode] = useState<CodeState[0]>({
@@ -65,13 +73,17 @@ export function IdeSim({
         <ThemeContext.Provider value={theme[0] as Theme}>
           <Container>
             <Code
-              full
+              full={!secondaryComponent}
               colours={theme[0].code.text}
               typing={animation}
               language={language}
             >
               {codeContent}
             </Code>
+
+            <StatusBar position={code.cursorPosition} />
+
+            {secondaryComponent}
           </Container>
         </ThemeContext.Provider>
       </IdeSimContext.Provider>

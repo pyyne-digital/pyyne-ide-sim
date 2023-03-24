@@ -5,7 +5,6 @@ import { Container, EditorStats, FilePath } from "./styles";
 interface Props {
   zoom?: number;
   position: Position;
-  lines: Array<string>;
 }
 
 const Spaced = styled.div`
@@ -16,11 +15,7 @@ const Spaced = styled.div`
   align-items: center;
 `;
 
-export function StatusBar({
-  zoom = 100,
-  position = { x: 0, y: 0 },
-  lines = [],
-}: Props) {
+export function StatusBar({ zoom = 100, position = { x: 0, y: 0 } }: Props) {
   return (
     <Container>
       <FilePath />
