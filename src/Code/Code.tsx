@@ -1,12 +1,13 @@
-import { AnimationEngineContext } from "components/pyyne-animation-engine";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useContext, useEffect, useMemo, useRef } from "react";
+import { TypingBehaviour } from "../types";
 import { IdeSimContext } from "../Context";
 import { codeProcessor } from "../helpers";
-import { Position } from "../interfaces/Position";
-import { Line } from "../Line/Line";
-import { TypingBehaviour } from "../types";
-import { ColourTypes } from "./coloursType";
+
 import { Container } from "./styles";
+import { AnimationEngineContext } from "components/pyyne-animation-engine";
+
+import { Line } from "../Line/Line";
+import { ColourTypes } from "./coloursType";
 
 interface Props {
   children: string;
@@ -16,8 +17,6 @@ interface Props {
   typing?: TypingBehaviour;
 
   full?: boolean;
-
-  // position: Position;
 }
 
 export function Code({
@@ -38,27 +37,24 @@ export function Code({
   const lastLineRef = useRef<HTMLParagraphElement>(null!);
 
   const lines = useMemo(codeProcessor(code.content, language), [code.content]);
-  const { speed = 50, timidness = 0, confidence = 1 } = typing || {};
+  // const { speed = 50, timidness = 0, confidence = 1 } = typing || {};
 
-  const { x, y } = useMemo(
-    () => ({
-      x: children.split("\n").at(-1)?.trim().length || 0,
-      y: lines.length,
-    }),
-    [lines]
-  );
+  // const { x, y } = useMemo(
+  //   () => ({
+  //     x: children.split("\n").at(-1)?.trim().length || 0,
+  //     y: lines.length,
+  //   }),
+  //   [lines]
+  // );
 
   useEffect(() => {
-    console.log("h");
     if (!typing) return setCode("content", children);
-
-    let result = "";
 
     children.split("").forEach((character, index) => {
       insert("code", ({ clock }) => ({
         id: `content-${index}`,
         triggers: {
-          time: clock + index,
+          time: clock + index + 1,
         },
         function: () => {
           setCode("content", (previous) => previous + character);
@@ -69,13 +65,7 @@ export function Code({
     return () => {
       remove("code");
     };
-  }, [typing, children]);
-
-  // useEffect(() => {
-  //   ref.current?.scroll({
-  //     top: 2147483647,
-  //   });
-  // }, [lines]);
+  }, [children]);
 
   return (
     <Container ref={ref!} colours={colours} full={full}>

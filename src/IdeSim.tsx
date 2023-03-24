@@ -3,13 +3,16 @@ import { createGlobalStyle, ThemeContext } from "styled-components";
 import { Container } from "./styles";
 import { themes } from "./themes";
 
-import { IdeSimContext, CodeStateObject } from "./Context";
+import { IdeSimContext, CodeState } from "./Context";
 import { Theme } from "./themes/type";
 import { Code } from "./Code/Code";
 
-import { TypingBehaviour } from "./types";
+import { createSetter, TypingBehaviour } from "./types";
+import { Animation } from "components/pyyne-animation-engine";
 
 interface Props {
+  id?: string;
+
   theme: keyof typeof themes | typeof themes[keyof typeof themes];
   language: string;
   children: ReactNode;
@@ -23,24 +26,12 @@ const GlobalStyle = createGlobalStyle`
     }
   `;
 
-function createSetter<T>(setFunction: Dispatch<SetStateAction<T>>) {
-  return (
-    key: keyof T,
-    value: T[typeof key] | ((value: T[typeof key]) => T[typeof key])
-  ) =>
-    setFunction((previous) => ({
-      ...previous,
-      [key]:
-        typeof value === "function"
-          ? (value as (value: T[typeof key]) => T[typeof key])(previous[key])
-          : value,
-    }));
-}
-
 export function IdeSim({
+  id = "pyyne-ide-sim",
+
   theme: _theme,
   children,
-  language = "javascript",
+  language = "typescript",
   animation,
 }: Props) {
   const codeContent =
@@ -50,7 +41,9 @@ export function IdeSim({
       ? children
       : "";
 
-  const [code, _setCode] = useState<CodeStateObject>({
+  const _halt = useState(animation?.halt?.[0] ?? false);
+  const interval = useState(50);
+  const [code, _setCode] = useState<CodeState[0]>({
     content: animation ? `` : codeContent,
     editable: false,
     colours: {},
@@ -61,16 +54,27 @@ export function IdeSim({
   const setCode = createSetter(_setCode);
   const theme = useState(typeof _theme === "string" ? themes[_theme] : _theme);
 
+  const halt = animation?.halt ?? _halt;
+
   return (
-    <IdeSimContext.Provider value={{ theme, code: [code, setCode] }}>
-      <GlobalStyle />
-      <ThemeContext.Provider value={theme[0] as Theme}>
-        <Container>
-          <Code full colours={theme[0].code.text} typing={animation}>
-            {codeContent}
-          </Code>
-        </Container>
-      </ThemeContext.Provider>
-    </IdeSimContext.Provider>
+    <Animation id={id} halt={halt} interval={interval}>
+      <IdeSimContext.Provider
+        value={{ theme, halt, interval, code: [code, setCode] }}
+      >
+        <GlobalStyle />
+        <ThemeContext.Provider value={theme[0] as Theme}>
+          <Container>
+            <Code
+              full
+              colours={theme[0].code.text}
+              typing={animation}
+              language={language}
+            >
+              {codeContent}
+            </Code>
+          </Container>
+        </ThemeContext.Provider>
+      </IdeSimContext.Provider>
+    </Animation>
   );
 }

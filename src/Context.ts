@@ -1,32 +1,29 @@
 import { createContext, Dispatch, SetStateAction } from "react";
 import { Theme } from "./themes/type";
 import { TerminalLine } from "./Previews/Terminal/props";
-import { TypingBehaviour } from "./types";
+import { State, TypingBehaviour } from "./types";
 import { Position } from "./interfaces/Position";
 
-export type CodeStateObject = {
-  content: string;
-  editable?: boolean;
-  colours: {};
+export type HaltState = State<boolean>;
+export type IntervalState = State<number>;
+export type CodeState = State<
+  {
+    content: string;
+    editable?: boolean;
+    colours: {};
 
-  cursorPosition: Position;
-};
-
-export type CodeState = [
-  CodeStateObject,
-  (
-    key: keyof CodeStateObject,
-    value:
-      | CodeStateObject[typeof key]
-      | ((value: CodeStateObject[typeof key]) => CodeStateObject[typeof key])
-  ) => void
-];
+    cursorPosition: Position;
+  },
+  false
+>;
 
 export const defaultContext: {
   theme: [Theme, Dispatch<SetStateAction<Theme>>];
   animation?: TypingBehaviour;
 
   code: CodeState;
+  halt: HaltState;
+  interval: IntervalState;
 
   preview?: Partial<{
     terminal: {
@@ -40,7 +37,10 @@ export const defaultContext: {
     timidness: 1,
     confidence: 1,
   },
+
+  halt: null!,
   code: null!,
+  interval: null!,
 
   preview: {
     terminal: {

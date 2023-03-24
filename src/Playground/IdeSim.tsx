@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Playground } from "../interfaces/Playground";
-import { Animation } from "components/pyyne-animation-engine";
 
 import * as IdeSim from "../";
 // import { TerminalLine } from "../Previews/Terminal/props";
@@ -21,31 +20,29 @@ export function Example({ Playground }: Props) {
 
   return (
     <Playground.Container>
-      <Animation id="code">
-        <Playground.Showcase onSizeChange={setSize}>
-          <IdeSim.Component
-            theme="PYYNE"
-            language="typescript"
-            animation={{ speed: 1, timidness: 1, confidence: 1 }}
-          >
-            {code}
+      <Playground.Showcase onSizeChange={setSize}>
+        <IdeSim.Component
+          theme="PYYNE"
+          language="typescript"
+          animation={{ speed: 1, timidness: 1, confidence: 1 }}
+        >
+          {code}
 
-            {/* <IdeSim.Previews.Terminal>{terminalText}</IdeSim.Previews.Terminal> */}
-          </IdeSim.Component>
-        </Playground.Showcase>
+          {/* <IdeSim.Previews.Terminal>{terminalText}</IdeSim.Previews.Terminal> */}
+        </IdeSim.Component>
+      </Playground.Showcase>
 
-        <Playground.ControlPanel>
-          <IdeSim.Playground.ControlPanel
-            theme={theme}
-            width={width}
-            height={height}
-            editableState={[editable, setEditable]}
-            codeState={[code, setCode]}
-            colourControlsState={[showColourControls, setShowColourControls]}
-            terminalTextState={null!}
-          />
-        </Playground.ControlPanel>
-      </Animation>
+      <Playground.ControlPanel>
+        <IdeSim.Playground.ControlPanel
+          theme={theme}
+          width={width}
+          height={height}
+          editableState={[editable, setEditable]}
+          codeState={[code, setCode]}
+          colourControlsState={[showColourControls, setShowColourControls]}
+          terminalTextState={null!}
+        />
+      </Playground.ControlPanel>
     </Playground.Container>
   );
 }
