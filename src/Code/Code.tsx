@@ -53,6 +53,7 @@ export function Code({
         triggers: {
           time: clock + index + 1,
         },
+
         function: () => {
           setCode("content", (previous) => previous + character);
         },

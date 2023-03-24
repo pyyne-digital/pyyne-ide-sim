@@ -17,6 +17,15 @@ export type CodeState = State<
   false
 >;
 
+export type PreviewState = State<
+  Partial<{
+    terminal: {
+      content: string;
+    };
+  }>,
+  false
+>;
+
 export const defaultContext: {
   theme: [Theme, Dispatch<SetStateAction<Theme>>];
   animation?: TypingBehaviour;
@@ -25,11 +34,7 @@ export const defaultContext: {
   halt: HaltState;
   interval: IntervalState;
 
-  preview?: Partial<{
-    terminal: {
-      content: TerminalLine[];
-    };
-  }>;
+  preview: PreviewState;
 } = {
   theme: [] as any,
   animation: {
@@ -41,12 +46,7 @@ export const defaultContext: {
   halt: null!,
   code: null!,
   interval: null!,
-
-  preview: {
-    terminal: {
-      content: [],
-    },
-  },
+  preview: null!,
 };
 
 export const IdeSimContext = createContext(defaultContext);

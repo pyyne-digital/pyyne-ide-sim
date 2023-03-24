@@ -1,21 +1,18 @@
 export type TerminalLine =
   | {
       type: "input";
+      pre?: string;
+      pos?: string;
+      delay?: number;
+      duration?: number;
       content: string;
-      prompt?: string;
 
-      animation?: Partial<{
-        time: number;
-        delay: number;
-      }>;
+      timeCurve?: (clock: number) => number;
     }
   | {
       type: "output";
+      delay?: number;
       content: string;
-
-      animation?: Partial<{
-        delay: number;
-      }>;
     };
 
 export type Props = {

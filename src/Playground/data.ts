@@ -1,3 +1,5 @@
+import { TerminalLine } from "../Previews/Terminal/props";
+
 export const code = `import * as Pyyne from 'interfaces/PYYNE';
 import { Correlated } from 'interfaces/Correlation';
 
@@ -90,8 +92,31 @@ export default new (class ProjectService extends Pyyne.Service {
 })();
 `;
 
-export const terminalOutput = `$ node server.is && stripe listen
-> Ready! Waiting for requests...
-2023-03-01 14:45:22 [200] payment_intent.created
-2023-03-01 14:45:22 [200] charge.succeeded
-2023-03-01 14:45:22 [200] payment_intent.succeeded`;
+export const terminalOutput: TerminalLine[] = [
+  {
+    type: "input",
+    pre: "$ ",
+    pos: "",
+    delay: 0,
+    content: "node server && stripe listen",
+  },
+  {
+    type: "output",
+    content: "> Ready! Waiting for requests...",
+  },
+  {
+    type: "output",
+    delay: 200,
+    content: "2023-03-01 14:45:22 [200] payment_intent.created",
+  },
+  {
+    type: "output",
+    delay: 500,
+    content: "2023-03-01 14:45:22 [200] charge.succeeded",
+  },
+  {
+    type: "output",
+    delay: 50,
+    content: "2023-03-01 14:45:22 [200] payment_intent.succeeded",
+  },
+];

@@ -1,9 +1,9 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { createGlobalStyle, ThemeContext } from "styled-components";
 import { Container } from "./styles";
 import { themes } from "./themes";
 
-import { IdeSimContext, CodeState } from "./Context";
+import { IdeSimContext, CodeState, PreviewState } from "./Context";
 import { Theme } from "./themes/type";
 import { Code } from "./Code/Code";
 
@@ -50,7 +50,7 @@ export function IdeSim({
       ? children
       : null;
 
-  const _halt = useState(animation?.halt?.[0] ?? false);
+  const _halt = useState(animation?.halt?.[0] ?? true);
   const interval = useState(50);
   const [code, _setCode] = useState<CodeState[0]>({
     content: animation ? `` : codeContent,
@@ -59,16 +59,34 @@ export function IdeSim({
 
     cursorPosition: { x: 0, y: 0 },
   });
+  const [preview, _setPreview] = useState<PreviewState[0]>({
+    terminal: {
+      content: "",
+    },
+  });
 
   const setCode = createSetter(_setCode);
+  const setPreview = createSetter(_setPreview);
   const theme = useState(typeof _theme === "string" ? themes[_theme] : _theme);
 
   const halt = animation?.halt ?? _halt;
 
+  useEffect(() => {
+    setTimeout(() => {
+      halt[1](false);
+    }, 1000);
+  }, []);
+
   return (
     <Animation id={id} halt={halt} interval={interval}>
       <IdeSimContext.Provider
-        value={{ theme, halt, interval, code: [code, setCode] }}
+        value={{
+          theme,
+          halt,
+          interval,
+          code: [code, setCode],
+          preview: [preview, setPreview],
+        }}
       >
         <GlobalStyle />
         <ThemeContext.Provider value={theme[0] as Theme}>
@@ -84,7 +102,7 @@ export function IdeSim({
 
             <StatusBar position={code.cursorPosition} />
 
-            <Preview>{secondaryComponent}</Preview>
+            {secondaryComponent && <Preview>{secondaryComponent}</Preview>}
           </Container>
         </ThemeContext.Provider>
       </IdeSimContext.Provider>
