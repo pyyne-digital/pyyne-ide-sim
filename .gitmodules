@@ -1,0 +1,3 @@
+[submodule "src/PYYNE/animation/engine"]
+	path = src/PYYNE/animation/engine
+	url = https://github.com/pyyne-digital/pyyne-webanim
