@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { useContext, useEffect, useMemo, useRef } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { TypingBehaviour } from "../types";
 import { IdeSimContext } from "../Context";
 import { codeProcessor } from "../helpers";
@@ -38,6 +38,9 @@ export function Code({
   const caretRef = useRef<HTMLSpanElement>(null!);
   const lastLineRef = useRef<HTMLParagraphElement>(null!);
 
+  const [scrollLock, setScrollLock] = useState(false);
+  const [userScrolling, setUserScrolling] = useState(false);
+
   const lines = useMemo(codeProcessor(code.content, language), [code.content]);
   // const { speed = 50, timidness = 0, confidence = 1 } = typing || {};
 
@@ -68,8 +71,32 @@ export function Code({
     });
   }, [code.content, lines]);
 
+  useEffect(() => {
+    if (scrollLock || userScrolling) return;
+
+    setScrollLock(true);
+
+    if (!userScrolling)
+      ref.current?.scroll({
+        top: ref.current?.scrollHeight,
+      });
+
+    setScrollLock(false);
+  }, [scrollLock, userScrolling, lines]);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (scrollLock) return;
+
+    const { current } = ref || {};
+    if (!current) return;
+
+    setUserScrolling(
+      current.scrollTop < current.scrollHeight - current.offsetHeight
+    );
+  };
+
   return (
-    <Container ref={ref!} colours={colours} full={full}>
+    <Container ref={ref!} full={full} colours={colours} onScroll={handleScroll}>
       {lines
         .filter((x, i) => (i && i !== lines.length - 1) || x)
         .map((piece, i) => (

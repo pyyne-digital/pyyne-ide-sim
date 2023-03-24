@@ -29,7 +29,7 @@ export function Example({ Playground }: Props) {
         >
           {code}
 
-          {/* <IdeSim.Previews.Terminal>{terminalText}</IdeSim.Previews.Terminal> */}
+          <IdeSim.Previews.Terminal>{terminalText}</IdeSim.Previews.Terminal>
         </IdeSim.Component>
       </Playground.Showcase>
 

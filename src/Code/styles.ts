@@ -9,7 +9,7 @@ export const Container = styled.div<{
   full?: boolean;
   secondaryComponentHeight?: number;
 }>`
-  width: calc(100% - ${padding});
+  width: calc(100% - 2 * ${padding});
   height: ${({ full, secondaryComponentHeight = "0px" }) =>
     `calc(${
       full ? 100 : 50

@@ -10,6 +10,7 @@ import { Code } from "./Code/Code";
 import { createSetter, TypingBehaviour } from "./types";
 import { Animation } from "./PYYNE/animation/engine";
 import { StatusBar } from "./Previews/StatusBar/StatusBar";
+import { Preview } from "./Previews/Preview";
 
 interface Props {
   id?: string;
@@ -83,7 +84,7 @@ export function IdeSim({
 
             <StatusBar position={code.cursorPosition} />
 
-            {secondaryComponent}
+            <Preview>{secondaryComponent}</Preview>
           </Container>
         </ThemeContext.Provider>
       </IdeSimContext.Provider>
