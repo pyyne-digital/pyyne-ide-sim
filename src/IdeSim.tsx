@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { ReactNode, useState } from "react";
 import { createGlobalStyle, ThemeContext } from "styled-components";
 import { Container } from "./styles";
 import { themes } from "./themes";
@@ -8,7 +8,7 @@ import { Theme } from "./themes/type";
 import { Code } from "./Code/Code";
 
 import { createSetter, TypingBehaviour } from "./types";
-import { Animation } from "components/pyyne-animation-engine";
+import { Animation } from "./PYYNE/animation/engine";
 
 interface Props {
   id?: string;

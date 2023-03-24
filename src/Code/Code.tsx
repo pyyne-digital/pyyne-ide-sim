@@ -1,10 +1,12 @@
-import { ReactNode, useContext, useEffect, useMemo, useRef } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { TypingBehaviour } from "../types";
 import { IdeSimContext } from "../Context";
 import { codeProcessor } from "../helpers";
 
 import { Container } from "./styles";
-import { AnimationEngineContext } from "components/pyyne-animation-engine";
+import { AnimationEngineContext } from "../PYYNE/animation/engine";
 
 import { Line } from "../Line/Line";
 import { ColourTypes } from "./coloursType";
