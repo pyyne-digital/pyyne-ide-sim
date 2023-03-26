@@ -50,6 +50,13 @@ export function ControlPanel({
       );
     };
 
+  const setLSCode =
+    (reset = false) =>
+    () => {
+      localStorage.code = reset ? "" : code;
+      window.location.reload();
+    };
+
   return (
     <>
       <p>
@@ -76,6 +83,11 @@ export function ControlPanel({
           whiteSpace: "pre",
         }}
       />
+
+      <div style={{ display: "flex" }}>
+        <button onClick={setLSCode(true)}>Reset</button>
+        <button onClick={setLSCode(false)}>Save</button>
+      </div>
       {/* 
       <p>Terminal content:</p>
       <textarea

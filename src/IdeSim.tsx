@@ -79,6 +79,10 @@ export function IdeSim({
     setCode("editable", editable);
   }, [editable]);
 
+  useEffect(() => {
+    theme[1](typeof _theme === "string" ? themes[_theme] : _theme);
+  }, [_theme]);
+
   return (
     <Animation id={id} halt={halt} interval={interval}>
       <IdeSimContext.Provider
