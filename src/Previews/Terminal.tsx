@@ -10,6 +10,12 @@ interface Props {
   children: TerminalLine[];
 }
 
+enum InputMode {
+  Transparent,
+  Hollow,
+  Filled,
+}
+
 export function Terminal({ children }: Props) {
   const ref = useRef<HTMLDivElement>(null!);
 
@@ -19,8 +25,8 @@ export function Terminal({ children }: Props) {
     preview: [preview, setPreview],
   } = useContext(IdeSimContext);
 
-  const [input, setInput] = useState<0 | 1 | 2>(
-    children[0].type === "input" ? 1 : 0
+  const [input, setInput] = useState<InputMode>(
+    children[0].type === "input" ? InputMode.Hollow : InputMode.Transparent
   );
 
   const _lines = useMemo(codeProcessor(preview.terminal!.content), [
@@ -30,48 +36,48 @@ export function Terminal({ children }: Props) {
 
   useEffect(() => {
     children.reduce((index, line) => {
+      const rid = Math.ceil(Math.random() * 1000000),
+        delay = line.delay || 0;
+
+      const registerFrame = engine.buildFrame({
+        componentName: "terminal",
+        time: (clock) => clock + index + delay,
+      });
+
+      const setInputMode = (value: typeof input, timeAdjustment = 0) =>
+        registerFrame({
+          id: `inputchange-${rid}`,
+          fn: () => setInput(value),
+          timeAdjustment,
+        });
+
+      const print =
+        (offset: number, timeAdjustment = 0) =>
+        (value: string | ((previous: string) => string)) =>
+          registerFrame({
+            id: `content-${rid}-${index + offset}`,
+            fn: () =>
+              setPreview("terminal", ({ content } = { content: "" }) => ({
+                content: content + value,
+              })),
+            timeAdjustment,
+          });
+
       let dt = 0;
 
-      const r = Math.ceil(Math.random() * 1000000),
-        delay = line.delay || 0,
-        timer = engine.timer("terminal", (clock) => clock + index + delay);
-
-      const toggleInput = (value: typeof input, { adjustment = 0 } = {}) =>
-        timer(`inputchange-${r}-${index}`)(() => setInput(value), adjustment);
-
-      const output = (
-        value: string | ((previous: string) => string),
-        { offset = 0, adjustment = 0 } = {}
-      ) =>
-        timer(`content-${r}-${index + offset}`)(
-          () =>
-            setPreview("terminal", ({ content } = { content: "" }) => ({
-              content: content + value,
-            })),
-          adjustment
-        );
-
       if (line.type === "input") {
-        if (line.pre)
-          output("\n" + line.pre, { offset: -1, adjustment: -delay + 30 });
+        if (line.pre) print(index - 1, -delay + 30)("\n" + line.pre);
 
-        toggleInput(2, { adjustment: index });
+        setInputMode(InputMode.Filled);
 
-        dt = line.content.split("").reduce(
-          (index, character) =>
-            output(character, {
-              offset: index + dt,
-              adjustment: index + 30,
-            }) && index + 1,
-          index
-        );
+        dt = line.content
+          .split("")
+          .reduce((i, c) => print(i + dt, i + 30)(c) && i + 1, index);
 
-        if (line.pos)
-          output(line.pos, { offset: index + dt, adjustment: dt + 50 });
-      } else {
-        toggleInput(0);
-        output("\n" + line.content, { offset: index, adjustment: delay });
-      }
+        if (line.pos) print(index + dt, dt + 50)(line.pos);
+      } else
+        setInputMode(InputMode.Transparent) &&
+          print(index, delay)("\n" + line.content);
 
       return index + delay + dt + 1;
     }, 0);
@@ -82,7 +88,7 @@ export function Terminal({ children }: Props) {
   }, [children]);
 
   useEffect(() => {
-    setCode("focus", input !== 2);
+    setCode("focus", input !== InputMode.Filled);
   }, [input]);
 
   return (

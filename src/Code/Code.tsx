@@ -49,13 +49,19 @@ export function Code({
 
   useEffect(() => {
     if (!typing) return setCode("content", children);
-    let timer = engine.timerByIndexedId("code", "content");
 
-    children.split("").forEach((character, index) => {
-      timer = timer((clock) => clock + index + 1)(() =>
-        setCode("content", (previous) => previous + character)
+    children
+      .split("")
+      .map((character, index) => ({
+        id: `content-${index}`,
+        time: (clock: number) => clock + index + 1,
+        fn: () => setCode("content", (previous) => previous + character),
+      }))
+      .forEach(
+        engine.buildFrame({
+          componentName: "code",
+        })
       );
-    });
 
     return () => {
       engine.deschedule("code");
