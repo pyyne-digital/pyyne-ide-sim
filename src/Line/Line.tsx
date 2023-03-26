@@ -1,4 +1,4 @@
-import { forwardRef, Ref, useContext, useEffect, useState } from "react";
+import { forwardRef, Ref, useContext } from "react";
 import styled from "styled-components";
 import { IdeSimContext } from "../Context";
 import { Caret } from "./Caret";
@@ -19,6 +19,8 @@ interface Props {
   children: string;
   typingInterval?: number;
 
+  caret?: any;
+
   thinCaret?: boolean;
   caretRef?: Ref<HTMLSpanElement>;
   lastLineRef?: Ref<HTMLParagraphElement>;
@@ -28,30 +30,13 @@ interface Props {
 
 export const Line = forwardRef(
   (
-    {
-      last,
-      number,
-      children,
-      caretRef,
-      indentation = 0,
-      typingInterval,
-      thinCaret = true,
-    }: Props,
+    { last, number, children, indentation = 0, caret }: Props,
     fref: Ref<HTMLParagraphElement>
   ) => {
     const {
-      code: [code],
+      code: [code, setCode],
     } = useContext(IdeSimContext);
     const _indentation = indentation || children.match(/ +/g)?.[0].length || 0;
-
-    const [content, setContent] = useState(``);
-
-    useEffect(() => {
-      if (typingInterval)
-        setTimeout(() => {
-          setContent((previous) => children.substring(0, previous.length + 1));
-        }, Math.random() * typingInterval);
-    }, [code, content]);
 
     return (
       <Container>
@@ -61,14 +46,14 @@ export const Line = forwardRef(
           className="line-content"
           indentation={_indentation}
           contentEditable={code.editable}
-          dangerouslySetInnerHTML={{
-            __html: content || children,
-          }}
+          dangerouslySetInnerHTML={{ __html: children }}
+          onFocus={() => setCode("focus", false)}
+          onBlur={() => setCode("focus", true)}
         />
-        {last && !code.editable && (
-          <Caret ref={caretRef} content={children} thin={thinCaret} />
-        )}
+        {caret && { ...caret, props: { ...caret.props, content: children } }}
       </Container>
     );
   }
 );
+
+export { Caret };

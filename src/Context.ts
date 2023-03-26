@@ -1,6 +1,5 @@
 import { createContext, Dispatch, SetStateAction } from "react";
 import { Theme } from "./themes/type";
-import { TerminalLine } from "./Previews/Terminal/props";
 import { State, TypingBehaviour } from "./types";
 import { Position } from "./interfaces/Position";
 
@@ -8,6 +7,7 @@ export type HaltState = State<boolean>;
 export type IntervalState = State<number>;
 export type CodeState = State<
   {
+    focus: boolean;
     content: string;
     editable?: boolean;
     colours: {};

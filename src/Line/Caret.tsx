@@ -3,18 +3,20 @@ import styled from "styled-components";
 
 interface Props {
   thin?: boolean;
-  content: string;
+  hollow?: boolean;
+  content?: string;
 }
 
-const Element = styled.span<{ thin?: boolean }>`
-  background-color: white;
-  width: ${({ thin }) => `${thin ? 3 : 9}px`};
-  height: 18px;
+const Element = styled.span<Partial<Props>>`
+  background-color: ${({ hollow }) => (hollow ? "none" : "white")};
+  border: ${({ thin }) => !thin && `1px solid white`};
+  width: ${({ thin }) => `${thin ? 3 : 7}px`};
+  height: ${({ thin }) => (thin ? 18 : 15)}px;
   padding: 0;
 `;
 
 export const Caret = forwardRef(
-  ({ content, thin }: Props, fref: ForwardedRef<HTMLSpanElement>) => {
+  ({ content, thin, hollow }: Props, fref: ForwardedRef<HTMLSpanElement>) => {
     const [blink, setBlink] = useState(true);
     const [, setContent] = useState(content);
 
@@ -35,6 +37,8 @@ export const Caret = forwardRef(
       };
     }, [content]);
 
-    return blink ? <Element ref={fref} thin={thin} /> : null;
+    return blink || !thin ? (
+      <Element ref={fref} thin={thin} hollow={hollow} />
+    ) : null;
   }
 );

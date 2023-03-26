@@ -8,8 +8,9 @@ import { codeProcessor } from "../helpers";
 import { Container } from "./styles";
 import { AnimationEngineContext } from "../PYYNE/animation/engine";
 
-import { Line } from "../Line/Line";
+import { Caret, Line } from "../Line/Line";
 import { ColourTypes } from "./coloursType";
+import { useExternalClick } from "hooks";
 
 interface Props {
   children: string;
@@ -32,12 +33,15 @@ export function Code({
     code: [code, setCode],
   } = useContext(IdeSimContext);
 
-  const { insert, remove } = useContext(AnimationEngineContext);
+  const { engine } = useContext(AnimationEngineContext);
 
-  const ref = useRef<HTMLDivElement>(null!);
+  const ref = useExternalClick(() => {
+    setFocused(false);
+  });
   const caretRef = useRef<HTMLSpanElement>(null!);
   const lastLineRef = useRef<HTMLParagraphElement>(null!);
 
+  const [focused, setFocused] = useState(false); // tracks whether the real user has clicked the IDE
   const [scrollLock, setScrollLock] = useState(false);
   const [userScrolling, setUserScrolling] = useState(false);
 
@@ -47,7 +51,7 @@ export function Code({
     if (!typing) return setCode("content", children);
 
     children.split("").forEach((character, index) => {
-      insert("code", ({ clock }) => ({
+      engine.schedule("code", ({ clock }) => ({
         id: `content-${index}`,
         triggers: {
           time: clock + index + 1,
@@ -60,7 +64,7 @@ export function Code({
     });
 
     return () => {
-      remove("code");
+      engine.deschedule("code");
     };
   }, [children]);
 
@@ -75,6 +79,10 @@ export function Code({
           ?.trim().length || 0,
     });
   }, [code.content, lines]);
+
+  useEffect(() => {
+    setCode("focus", !code.editable || !focused);
+  }, [code.editable]);
 
   useEffect(() => {
     if (scrollLock || userScrolling) return;
@@ -101,7 +109,13 @@ export function Code({
   };
 
   return (
-    <Container ref={ref!} full={full} colours={colours} onScroll={handleScroll}>
+    <Container
+      ref={ref!}
+      full={full}
+      colours={colours}
+      onScroll={handleScroll}
+      onFocus={() => setFocused(true)}
+    >
       {lines
         .filter((x, i) => (i && i !== lines.length - 1) || x)
         .map((piece, i) => (
@@ -112,6 +126,7 @@ export function Code({
             last={i === lines.length - 1}
             caretRef={caretRef}
             thinCaret
+            caret={code.focus && i === lines.length - 1 && <Caret thin />}
           >
             {piece}
           </Line>

@@ -105,7 +105,7 @@ export const terminalOutput: TerminalLine[] = [
   {
     type: "input",
     pre: "$ ",
-    pos: "",
+    pos: " <b><i>[executing]</i> -> :8082</b>",
     delay: 150,
     content: "node server && stripe listen",
   },

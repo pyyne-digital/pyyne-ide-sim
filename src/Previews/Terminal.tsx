@@ -1,7 +1,7 @@
 import { codeProcessor } from "helpers";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { IdeSimContext } from "../Context";
-import { Line } from "../Line/Line";
+import { Line, Caret } from "../Line/Line";
 import { AnimationEngineContext } from "../PYYNE/animation/engine";
 import { ContentContainer } from "./styles";
 import { TerminalLine } from "./Terminal/props";
@@ -13,12 +13,16 @@ interface Props {
 export function Terminal({ children }: Props) {
   const ref = useRef<HTMLDivElement>(null!);
 
-  const { insert, remove } = useContext(AnimationEngineContext);
+  const { engine } = useContext(AnimationEngineContext);
   const {
+    code: [, setCode],
     preview: [preview, setPreview],
   } = useContext(IdeSimContext);
 
-  const [input, setInput] = useState(false);
+  const [input, setInput] = useState<0 | 1 | 2>(
+    children[0].type === "input" ? 1 : 0
+  );
+
   const _lines = useMemo(codeProcessor(preview.terminal!.content), [
       preview.terminal!.content,
     ]),
@@ -26,71 +30,60 @@ export function Terminal({ children }: Props) {
 
   useEffect(() => {
     children.reduce((index, line) => {
-      const r = Math.ceil(Math.random() * 1000000),
-        delay = line.delay || 0,
-        toggleInput = (v: boolean, index: number, delay = 0) =>
-          insert("terminal", ({ clock }) => ({
-            id: `inputchange-${r}-${index}`,
-            triggers: {
-              time: clock + index + delay,
-            },
-            function: () => {
-              setInput(v);
-            },
-          })),
-        output = (string: string, index: number, delay = 0) =>
-          insert("terminal", ({ clock }) => ({
-            id: `content-${r}-${index - 1}`,
-            triggers: {
-              time: clock + index + delay,
-            },
-            function: () => {
-              setPreview("terminal", ({ content } = { content: "" }) => ({
-                content: content + "\n" + string,
-              }));
-            },
-          }));
-
       let dt = 0;
 
-      if (line.type === "input") {
-        toggleInput(true, index, delay);
+      const r = Math.ceil(Math.random() * 1000000),
+        delay = line.delay || 0,
+        timer = engine.timer("terminal", (clock) => clock + index + delay);
 
-        if (line.pre) output(line.pre, index, ++dt);
+      const toggleInput = (value: typeof input, { adjustment = 0 } = {}) =>
+        timer(`inputchange-${r}-${index}`)(() => setInput(value), adjustment);
+
+      const output = (
+        value: string | ((previous: string) => string),
+        { offset = 0, adjustment = 0 } = {}
+      ) =>
+        timer(`content-${r}-${index + offset}`)(
+          () =>
+            setPreview("terminal", ({ content } = { content: "" }) => ({
+              content: content + value,
+            })),
+          adjustment
+        );
+
+      if (line.type === "input") {
+        if (line.pre)
+          output("\n" + line.pre, { offset: -1, adjustment: -delay + 30 });
+
+        toggleInput(2, { adjustment: index });
 
         dt = line.content.split("").reduce(
-          (index, c) =>
-            insert("terminal", ({ clock }) => ({
-              id: `content-${r}-${index}`,
-              triggers: {
-                time: clock + index + delay + 1,
-              },
-              function: () => {
-                setPreview("terminal", ({ content } = { content: "" }) => ({
-                  content: content + c,
-                }));
-              },
-            })) && index + 1,
+          (index, character) =>
+            output(character, {
+              offset: index + dt,
+              adjustment: index + 30,
+            }) && index + 1,
           index
         );
 
-        if (line.pos) output(line.pos, index + dt, delay);
+        if (line.pos)
+          output(line.pos, { offset: index + dt, adjustment: dt + 50 });
       } else {
-        toggleInput(false, index, delay);
-        output(line.content, index, delay);
+        toggleInput(0);
+        output("\n" + line.content, { offset: index, adjustment: delay });
       }
 
       return index + delay + dt + 1;
     }, 0);
 
     return () => {
-      remove("terminal");
+      engine.deschedule("terminal");
     };
   }, [children]);
 
   useEffect(() => {
-    if (children[0]?.type === "input") setInput(true);
-  }, []);
+    setCode("focus", input !== 2);
+  }, [input]);
 
   return (
     <ContentContainer ref={ref}>
@@ -98,8 +91,10 @@ export function Terminal({ children }: Props) {
         <Line
           key={i}
           typingInterval={0}
-          last={i === lines.length - 1 && input}
-          thinCaret={false}
+          caret={
+            i === lines.length - 1 &&
+            input !== 0 && <Caret hollow={input === 1} />
+          }
         >
           {content}
         </Line>

@@ -19,6 +19,7 @@ interface Props {
   language: string;
   children: ReactNode;
 
+  editable?: boolean;
   animation?: TypingBehaviour;
 }
 
@@ -35,6 +36,8 @@ export function IdeSim({
   children,
   language = "typescript",
   animation,
+
+  editable,
 }: Props) {
   const codeContent =
     children instanceof Array
@@ -53,6 +56,7 @@ export function IdeSim({
   const _halt = useState(animation?.halt?.[0] ?? false);
   const interval = useState(50);
   const [code, _setCode] = useState<CodeState[0]>({
+    focus: true,
     content: animation ? `` : codeContent,
     editable: false,
     colours: {},
@@ -70,6 +74,10 @@ export function IdeSim({
   const theme = useState(typeof _theme === "string" ? themes[_theme] : _theme);
 
   const halt = animation?.halt ?? _halt;
+
+  useEffect(() => {
+    setCode("editable", editable);
+  }, [editable]);
 
   return (
     <Animation id={id} halt={halt} interval={interval}>
