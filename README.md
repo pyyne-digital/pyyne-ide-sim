@@ -10,4 +10,4 @@ You may clone this repository and generate a build for your own, add it as a sub
 
 ## Customisation
 
-Most of the component's appearance can be customised via props. The secondary component can be changed for your own or removed entirely by omitting it within this component's children.
+Most of the component's appearance can be customised via props. The secondary component can be changed for your own or removed entirely by omitting it from this component's children.
