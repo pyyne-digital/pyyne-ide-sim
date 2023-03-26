@@ -49,18 +49,12 @@ export function Code({
 
   useEffect(() => {
     if (!typing) return setCode("content", children);
+    let timer = engine.timerByIndexedId("code", "content");
 
     children.split("").forEach((character, index) => {
-      engine.schedule("code", ({ clock }) => ({
-        id: `content-${index}`,
-        triggers: {
-          time: clock + index + 1,
-        },
-
-        function: () => {
-          setCode("content", (previous) => previous + character);
-        },
-      }));
+      timer = timer((clock) => clock + index + 1)(() =>
+        setCode("content", (previous) => previous + character)
+      );
     });
 
     return () => {
